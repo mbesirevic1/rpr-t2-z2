@@ -24,8 +24,40 @@ public class Interval {
 
     }
 
+    public double getPocetna() {
+        return pocetna;
+    }
+
+    public void setPocetna(double pocetna) {
+        this.pocetna = pocetna;
+    }
+
+    public double getKrajnja() {
+        return krajnja;
+    }
+
+    public void setKrajnja(double krajnja) {
+        this.krajnja = krajnja;
+    }
+
+    public boolean isPocetnaPripada() {
+        return pocetna_Pripada;
+    }
+
+    public void setPocetnaPripada(boolean pocetna_Pripada) {
+        this.pocetna_Pripada = pocetna_Pripada;
+    }
+
+    public boolean isKrajnjaPripada() {
+        return krajnja_Pripada;
+    }
+
+    public void setKrajnjaPripada(boolean krajnja_Pripada) {
+        this.krajnja_Pripada = krajnja_Pripada;
+    }
+
     public boolean isNull(){
-        return (pocetna == 0 && krajnja == 0);
+        return (pocetna == 0 && krajnja == 0 && !pocetna_Pripada && !krajnja_Pripada );
     }
 
     public boolean isIn(double t){
@@ -33,6 +65,82 @@ public class Interval {
                 (pocetna == t && pocetna_Pripada || krajnja==t && krajnja_Pripada ));
     }
 
+    public static Interval intersect(Interval I1, Interval I2){
+
+        Interval interval = new Interval();
+
+        if(I1.isIn(I2.getPocetna())){
+            interval.setPocetna(I2.getPocetna());
+            interval.setPocetnaPripada(I2.isPocetnaPripada());
+
+            if(I1.isIn(I2.getKrajnja())){
+                interval.setKrajnja(I2.getKrajnja());
+                interval.setKrajnjaPripada(I2.isKrajnjaPripada());
+            }
+            else{
+                interval.setKrajnja((I1.getKrajnja()));
+                interval.setKrajnjaPripada(I1.isKrajnjaPripada());
+            }
+
+        }
+        if(I2.isIn(I1.getPocetna())){
+            interval.setPocetna(I1.getPocetna());
+            interval.setPocetnaPripada(I1.isPocetnaPripada());
+
+            if(I2.isIn(I1.getKrajnja())){
+                interval.setKrajnja(I1.getKrajnja());
+                interval.setKrajnjaPripada(I1.isKrajnjaPripada());
+            }
+            else{
+                interval.setKrajnja((I2.getKrajnja()));
+                interval.setKrajnjaPripada(I2.isKrajnjaPripada());
+            }
+
+        }
+
+
+
+        return interval;
+    }
+
+    public Interval intersect(Interval I){
+
+        Interval interval = new Interval();
+
+        if(I.isIn(getPocetna())){
+            interval.setPocetna(getPocetna());
+            interval.setPocetnaPripada(isPocetnaPripada());
+
+            if(I.isIn(getKrajnja())){
+                interval.setKrajnja(getKrajnja());
+                interval.setKrajnjaPripada(isKrajnjaPripada());
+            }
+            else{
+                interval.setKrajnja(I.getKrajnja());
+                interval.setKrajnjaPripada(I.isKrajnjaPripada());
+            }
+        }
+
+
+
+        if(isIn(I.getPocetna())){
+            interval.setPocetna(I.getPocetna());
+            interval.setPocetnaPripada(I.isPocetnaPripada());
+
+            if(isIn(I.getKrajnja())){
+                interval.setKrajnja(I.getKrajnja());
+                interval.setKrajnjaPripada(I.isKrajnjaPripada());
+            }
+            else{
+                interval.setKrajnja(getKrajnja());
+                interval.setKrajnjaPripada(isKrajnjaPripada());
+            }
+        }
+
+
+
+        return interval;
+    }
 
 
 
@@ -46,9 +154,9 @@ public class Interval {
     @Override
     public String toString(){
 
-        if(pocetna == 0 && krajnja==0) return "()";
+        if(isNull()) return "()";
 
-        String string = "";
+        String string = new String();
 
         if(pocetna_Pripada){
             string = string + "[";
@@ -56,6 +164,8 @@ public class Interval {
         else{
             string = string + "(";
         }
+
+        string = string + Double.toString(getPocetna())+"," + Double.toString(getKrajnja());
 
         if(krajnja_Pripada){
             string = string + "]";
